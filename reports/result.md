@@ -1,5 +1,6 @@
-##INPUT
+## INPUT
 
+```json
 {
   "data": {
     "tenure": 12,
@@ -9,9 +10,11 @@
     "TechSupport_No": 1
   }
 }
+```
 
 ##OUTPUT
 
+```json
 {
   "probability": 0.2535,
   "risk": "Low",
@@ -19,3 +22,4 @@
     "Maintain satisfaction and rewards"
   ]
 }
+```
