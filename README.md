@@ -56,15 +56,4 @@ The solution integrates **machine learning, SQL, API development, and BI visuali
 
 ---
 
-## 📂 Project Structure
-
-customer-churn-retention/
-├── notebooks/ # EDA, feature engineering, modeling, simulation
-├── api/ # FastAPI app (prediction service)
-├── models/ # Trained ML model
-├── data/ # Raw, processed data & SQLite database
-├── powerbi/ # Power BI dashboard (.pbix)
-├── reports/ # Dashboard screenshot & insights summary
-├── src/ # (Reserved for future extensions)
-└── README.md
 
