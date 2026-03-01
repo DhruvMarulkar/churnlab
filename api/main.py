@@ -40,3 +40,7 @@ def predict_batch(batch: CustomerBatchInput):
         })
 
     return {"results": results}
+
+@app.get("/")
+def health():
+    return {"Status":"running"}

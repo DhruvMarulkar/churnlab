@@ -1,6 +1,6 @@
 import os
 import joblib
-import pandas as pd
+
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,4 +11,4 @@ FEATURE_PATH = os.path.join(BASE_DIR, "models", "processed", "feature_cols.pkl")
 
 
 model = joblib.load(MODEL_PATH)
-feature_cols = pd.read_csv(FEATURE_PATH)
+feature_cols = joblib.load(FEATURE_PATH)
