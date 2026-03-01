@@ -3,6 +3,6 @@ data/processed/
 models/
 .ipynb_checkpoints/
 __pycache__/
-*.pkl
+
 *.joblib
 *.pbix
