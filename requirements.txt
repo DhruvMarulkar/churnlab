@@ -10,3 +10,4 @@ streamlit
 python-multipart
 requests
 plotly
+altair
