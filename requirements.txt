@@ -3,3 +3,4 @@ requests==2.31.0
 plotly==5.18.0
 altair==4.2.2
 pandas==2.1.4
+numpy==1.26.4
