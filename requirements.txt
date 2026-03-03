@@ -8,3 +8,5 @@ joblib
 pydantic
 streamlit
 python-multipart
+requests
+plotly
