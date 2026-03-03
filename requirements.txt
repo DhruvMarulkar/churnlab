@@ -10,4 +10,4 @@ streamlit
 python-multipart
 requests
 plotly
-altair
+altair.vegalite.v4
