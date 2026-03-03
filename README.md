@@ -1,4 +1,11 @@
-# 📊 Customer Churn Prediction & Retention Strategy System
+
+
+![Architecture Diagram](deployment/architecture.png)
+
+## Link
+https://churnlab21.streamlit.app/
+
+## 📊 Customer Churn Prediction & Retention Strategy System
 
 An end-to-end **data science and business intelligence project** that predicts customer churn, quantifies revenue at risk, simulates retention strategies, and presents actionable insights through an interactive Power BI dashboard and a production-ready API.
 
