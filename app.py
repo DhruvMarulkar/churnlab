@@ -1,5 +1,6 @@
 import streamlit as st
-import requests
+import joblib
+import numpy as np
 import plotly.graph_objects as go
 
 
@@ -10,21 +11,23 @@ st.set_page_config(
 )
 
 
-# API URL 
 
-API_URL = "https://churnlab.onrender.com/predict/batch"
+@st.cache_resource
+def load_model():
+    return joblib.load("model/churn_model.pkl")
+
+model = load_model()
 
 
 st.title("📊 ChurnLab")
 st.subheader("Customer Churn Risk & Revenue Intelligence System")
 
 st.markdown("""
-Analyze churn probability, estimate annual revenue at risk, 
+Analyze churn probability, estimate annual revenue at risk,
 and receive actionable retention strategies.
 """)
 
 st.divider()
-
 
 st.markdown("## 🧾 Customer Profile")
 
@@ -46,73 +49,70 @@ tech_no = 1 if tech_support == "No" else 0
 payment_elec = 1 if payment_method == "Electronic check" else 0
 
 
+
 if st.button("🔍 Analyze Churn Risk", use_container_width=True):
 
-    payload = {
-        "data": [{
-            "tenure": tenure,
-            "MonthlyCharges": monthly_charges,
-            "Contract_Month-to-month": contract_month,
-            "TechSupport_No": tech_no,
-            "PaymentMethod_Electronic check": payment_elec
-        }]
-    }
+    input_data = np.array([[
 
-    try:
-        response = requests.post(API_URL, json=payload)
+        tenure,
+        monthly_charges,
+        contract_month,
+        tech_no,
+        payment_elec
 
-        if response.status_code != 200:
-            st.error("API Error. Please check if backend is running.")
-        else:
-            result = response.json()["results"][0]
+    ]])
 
-            st.divider()
-            st.markdown("## 📈 Risk Analysis Results")
+    prob = model.predict_proba(input_data)[0][1]
 
-           
-            risk = result["risk"]
+    churn_probability = prob * 100
 
-            if risk == "High":
-                st.error(f"⚠️ HIGH RISK CUSTOMER")
-            elif risk == "Medium":
-                st.warning(f"⚠️ MEDIUM RISK CUSTOMER")
-            else:
-                st.success(f"✅ LOW RISK CUSTOMER")
-
-            col1, col2, col3 = st.columns(3)
-
-            col1.metric("Churn Probability", f"{result['probability']*100:.2f}%")
-            col2.metric("Annual Revenue at Risk", f"${result['annual_at_risk']}")
-            col3.metric("Best Strategy", result["best_strategy"])
-
-           
-            prob = result["probability"] * 100
-
-            fig = go.Figure(go.Indicator(
-                mode="gauge+number",
-                value=prob,
-                title={'text': "Churn Probability (%)"},
-                gauge={
-                    'axis': {'range': [0, 100]},
-                    'steps': [
-                        {'range': [0, 40], 'color': "green"},
-                        {'range': [40, 70], 'color': "orange"},
-                        {'range': [70, 100], 'color': "red"}
-                    ],
-                }
-            ))
-
-            st.plotly_chart(fig, use_container_width=True)
+    annual_at_risk = monthly_charges * 12 * prob
 
 
-            st.markdown("### 📌 Recommended Retention Actions")
+    if churn_probability > 70:
+        risk = "High"
+        strategy = "Offer retention discount"
+    elif churn_probability > 40:
+        risk = "Medium"
+        strategy = "Upsell add-ons"
+    else:
+        risk = "Low"
+        strategy = "Maintain rewards"
 
-            for action in result["recommendations"]:
-                st.markdown(f"- {action}")
 
-    except Exception as e:
-        st.error(f"Error connecting to API: {e}")
+    st.divider()
+    st.markdown("## 📈 Risk Analysis Results")
+
+    if risk == "High":
+        st.error("⚠️ HIGH RISK CUSTOMER")
+    elif risk == "Medium":
+        st.warning("⚠️ MEDIUM RISK CUSTOMER")
+    else:
+        st.success("✅ LOW RISK CUSTOMER")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Churn Probability", f"{churn_probability:.2f}%")
+    col2.metric("Annual Revenue at Risk", f"${annual_at_risk:.2f}")
+    col3.metric("Best Strategy", strategy)
+
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=churn_probability,
+        title={'text': "Churn Probability (%)"},
+        gauge={
+            'axis': {'range': [0, 100]},
+            'steps': [
+                {'range': [0, 40], 'color': "green"},
+                {'range': [40, 70], 'color': "orange"},
+                {'range': [70, 100], 'color': "red"}
+            ],
+        }
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 st.divider()
-st.markdown("Built with FastAPI, XGBoost & Streamlit | ChurnLab Intelligence System")
+st.markdown("Built with XGBoost & Streamlit | ChurnLab Intelligence System")
