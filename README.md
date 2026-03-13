@@ -2,8 +2,6 @@
 
 ![Architecture Diagram](deployment/architecture.png)
 
-## Link
-https://churnlab21.streamlit.app/
 
 ## 📊 Customer Churn Prediction & Retention Strategy System
 
